@@ -6,14 +6,12 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => res.status(500).send({ message: err.message }));
-  console.log(req.body);
 };
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
     .catch((err) => res.status(500).send({ message: err.message }));
-  console.log("users");
 };
 
 module.exports.getUser = (req, res) => {

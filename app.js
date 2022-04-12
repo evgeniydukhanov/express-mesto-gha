@@ -17,9 +17,17 @@ mongoose.connect("mongodb://localhost:27017/mestodb", {
 
 app.use("/users", require("./routes/users"));
 
-app.all("*", (req, res) => {
-  res.status(404).send({ message: "Неправильный путь" });
+app.use((req, res, next) => {
+  req.user = {
+    _id: "625592bc39d08a99d5deb442"
+  };
+
+  next();
 });
+
+// app.all("*", (req, res) => {
+//   res.status(404).send({ message: "Неправильный путь" });
+// });
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
