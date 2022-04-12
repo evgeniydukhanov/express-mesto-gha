@@ -13,8 +13,12 @@ const mongoose = require("mongoose");
 
 mongoose.connect("mongodb://localhost:27017/mestodb", {
   useNewUrlParser: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false,
+});
+
+app.use("/users", require("./routes/users"));
+
+app.all("*", (req, res) => {
+  res.status(404).send({ message: "Неправильный путь" });
 });
 
 app.listen(PORT, () => {
