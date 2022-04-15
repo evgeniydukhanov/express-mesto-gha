@@ -5,7 +5,14 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send({ message: "Переданы некорректные данные" });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 module.exports.getUsers = (req, res) => {
@@ -15,21 +22,40 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => res.send({ data: user }))
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: "Пользователь не найден" });
+      }
+      return res.send(user);
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.patchAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true })
     .then((user) => res.send({ _id: user._id, avatar }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send({ message: "Переданы некорректные данные" });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 module.exports.patchProfile = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
     .then((user) => res.send({ _id: user._id, name, about }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(400)
+          .send({ message: "Переданы некорректные данные" });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
