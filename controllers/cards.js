@@ -49,10 +49,10 @@ module.exports.likeCard = (req, res) => {
       return res.send(card);
     })
     .catch((err) => {
-      if (err.name === "PutError") {
-        return res
-          .status(400)
-          .send({ message: "Переданы некорректные данные" });
+      if (err.name === "CastError") {
+        return res.status(400).send({
+          message: "Переданы неккоретные данные",
+        });
       }
       return res.status(500).send({ message: err.message });
     });
@@ -73,7 +73,7 @@ module.exports.dislikeCard = (req, res) => {
       return res.send(card);
     })
     .catch((err) => {
-      if (err.name === "DeleteError") {
+      if (err.name === "CastError") {
         return res
           .status(400)
           .send({ message: "Переданы некорректные данные" });
