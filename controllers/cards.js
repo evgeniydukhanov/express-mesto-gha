@@ -31,14 +31,7 @@ module.exports.deleteCard = (req, res) => {
       }
       return res.send(card);
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "Некорректный id карточки",
-        });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.likeCard = (req, res) => {
@@ -56,7 +49,7 @@ module.exports.likeCard = (req, res) => {
       return res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "BadRequest") {
         return res.status(400).send({
           message: "Переданы неккоретные данные",
         });
@@ -80,7 +73,7 @@ module.exports.dislikeCard = (req, res) => {
       return res.send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "BadRequest") {
         return res
           .status(400)
           .send({ message: "Переданы некорректные данные" });

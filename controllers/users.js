@@ -30,7 +30,7 @@ module.exports.getUser = (req, res) => {
       return res.send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "BadRequest") {
         return res
           .status(400)
           .send({ message: "Переданы неккоректные данные" });
