@@ -1,5 +1,6 @@
-[![Tests](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-13-sprint.yml) 
-[![Tests](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
+[![Tests for sprint 13](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-13-sprint.yml) 
+
+[![Tests for sprint 14](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/evgeniydukhanov/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
 ## 13 проектная работа в Яндекс.Практикуме
@@ -9,16 +10,6 @@
 1. MongoDB,
 2. Node.js,
 3. Express.js;
-
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/${имя_пользователя}/${имя_репозитория}/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя_репозитория}/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/${имя_пользователя}/${имя_репозитория}/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя_репозитория}/actions/workflows/tests-14-sprint.yml)
-```
 
 
 ## Директории
