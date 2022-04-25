@@ -6,21 +6,31 @@ const app = express();
 
 const bodyParser = require('body-parser');
 
+const { errors } = require('celebrate');
+
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose');
 
+const { createUser, login } = require('./controllers/users');
+
+const auth = require('./middlewares/auth');
+
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
-app.use((req, res, next) => {
-  req.user = {
-    _id: '625592bc39d08a99d5deb442',
-  };
 
-  next();
-});
+app.use(errors());
+
+app.post('/signup', createUser);
+app.post('/signin', login);
+
+app.use(auth);
+
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 

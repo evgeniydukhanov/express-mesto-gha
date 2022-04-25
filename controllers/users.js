@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 module.exports.createUser = (req, res) => {
@@ -16,6 +17,7 @@ module.exports.createUser = (req, res) => {
       about,
       avatar,
       password: hash,
+      select: false,
     }))
       .then((user) => res.send({ data: user }))
       .catch((err) => {
@@ -79,4 +81,33 @@ module.exports.patchProfile = (req, res) => {
       }
       return res.status(500).send({ message: err.message });
     });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+      const token = jwt.sign({ _id: user._id }, 'super-secret-code', {
+        expiresIn: '7d',
+      });
+      res.cookie('jwt', token, {
+        maxAge: 3600000,
+        httpOnly: true,
+        sameSite: true,
+      });
+      res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
+module.exports.getMe = (req, res) => {
+  const { _id } = req.user;
+  User.find({ _id })
+    .then((user) => res.send(user))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
