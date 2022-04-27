@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const InternalError = require('../errors/InternalError');
-const NotFoundError = require('../errors/NotFoundError');
+// const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.createUser = (req, res) => {
   const {
@@ -107,20 +107,26 @@ module.exports.login = (req, res) => {
     });
 };
 
+// module.exports.getMe = (req, res) => {
+//   User.findById(req.params.userId)
+//     .then((user) => {
+//       if (!user) {
+//         return new NotFoundError('Пользователь не найден');
+//       }
+//       return res.send(user);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         return res
+//           .status(400)
+//           .send({ message: 'Переданы неккоректные данные' });
+//       }
+//       return new InternalError('Что-то пошло не так');
+//     });
+// };
 module.exports.getMe = (req, res) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      if (!user) {
-        return new NotFoundError('Пользователь не найден');
-      }
-      return res.send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы неккоректные данные' });
-      }
-      return new InternalError('Что-то пошло не так');
-    });
+  const { _id } = req.user;
+  User.find({ _id })
+    .then((user) => res.send(user))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
