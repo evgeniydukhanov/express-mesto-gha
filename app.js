@@ -22,8 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const login = require('./controllers/users');
-const createUser = require('./controllers/users');
+const { login, createUser } = require('./controllers/users');
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
