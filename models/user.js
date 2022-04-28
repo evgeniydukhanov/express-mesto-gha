@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 8,
     required: true,
+    select: false,
     validate: {
       validator: (v) => isURL(v),
       message: 'Некорректные данные поля password',
