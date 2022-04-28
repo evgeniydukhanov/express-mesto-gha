@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator: (v) => isURL(v),
+      message: 'Некорректные данные поля avatar',
+    },
   },
   email: {
     type: String,
@@ -35,10 +39,6 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     required: true,
     select: false,
-    validate: {
-      validator: (v) => isURL(v),
-      message: 'Некорректные данные поля password',
-    },
   },
 });
 // eslint-disable-next-line func-names
