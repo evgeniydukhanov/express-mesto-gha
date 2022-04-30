@@ -1,26 +1,26 @@
-// const jwt = require('jsonwebtoken');
-// const AuthorizationError = require('../errors/AuthorizationError');
+const jwt = require('jsonwebtoken');
+const AuthorizationError = require('../errors/AuthorizationError');
 
-// // eslint-disable-next-line consistent-return
-// module.exports = (req, res, next) => {
-//   const { authorization } = req.headers;
+// eslint-disable-next-line consistent-return
+module.exports = (req, res, next) => {
+  const { authorization } = req.headers;
 
-//   if (!authorization || !authorization.startsWith('Bearer ')) {
-//     return res
-//       .status(401)
-//       .send({ message: 'Необходима авторизация' });
-//   }
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return res
+      .status(401)
+      .send({ message: 'Необходима авторизация' });
+  }
 
-//   const token = authorization.replace('Bearer ', '');
-//   let payload;
+  const token = authorization.replace('Bearer ', '');
+  let payload;
 
-//   try {
-//     payload = jwt.verify(token, 'super-secret-key');
-//   } catch (err) {
-//     return new AuthorizationError('Необходима авторизация');
-//   }
+  try {
+    payload = jwt.verify(token, 'super-secret-key');
+  } catch (err) {
+    return new AuthorizationError('Необходима авторизация');
+  }
 
-//   req.user = payload; // записываем пейлоуд в объект запроса
+  req.user = payload; // записываем пейлоуд в объект запроса
 
-//   next(); // пропускаем запрос дальше
-// };
+  next(); // пропускаем запрос дальше
+};

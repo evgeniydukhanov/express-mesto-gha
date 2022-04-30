@@ -17,12 +17,12 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const { login, createUser } = require('./controllers/users');
-
+const auth = require('./middlewares/auth');
 
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-
+app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
