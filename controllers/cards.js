@@ -2,8 +2,9 @@ const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const ValidationError = require('../errors/ValidationError');
+const CastError = require('../errors/CastError');
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
@@ -23,7 +24,7 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
@@ -43,38 +44,32 @@ module.exports.deleteCard = (req, res) => {
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.name === 'CastError')
-        next(CastError('Переданы неккоретные данные'));
+    .then((card) => {
       if (!card) {
-        next(NotFoundError('Карточки с таким ID не существует'));
+        return next(new NotFoundError('Карточки с таким ID не существует'));
       }
-      next(err);
-    });
+      return res.send(card);
+    })
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(CastError('Переданы некорректные данные'))
-        if (!card) {
-          next(NotFoundError('Карточки с таким ID не существует'));
-        }
-        next(err);
-
-      };
-    });
+    .then((card) => {
+      if (!card) {
+        return next(new NotFoundError('Карточки с указанным ID не существует'));
+      }
+      return res.send(card);
+    })
+    .catch(next);
 };

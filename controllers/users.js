@@ -6,7 +6,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 // const AuthorizationError = require('../errors/AuthorizationError');
-
+const ConflictError = require('../errors/ConflictError');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -46,16 +46,16 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
-    .then((user) => res.send(user))
-    .catch((err) => {
+    .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError('Пользователь с указанным ID не найден'));
       }
-      next(err);
-    });
-}
+      return res.send(user);
+    })
+    .catch(next);
+};
 
-module.exports.patchAvatar = (req, res) => {
+module.exports.patchAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true })
     .then((user) => res.send({ _id: user._id, avatar }))
@@ -67,7 +67,7 @@ module.exports.patchAvatar = (req, res) => {
     });
 };
 
-module.exports.patchProfile = (req, res) => {
+module.exports.patchProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
     .then((user) => res.send({ _id: user._id, name, about }))
@@ -96,7 +96,7 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch(next);
-}
+};
 
 module.exports.getMe = (req, res, next) => {
   const { _id } = req.user;

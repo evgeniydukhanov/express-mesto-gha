@@ -39,7 +39,7 @@ app.post('/signup', celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
   }),
-}), createUser)
+}), createUser);
 
 app.use(auth);
 app.use('/users', require('./routes/users'));
