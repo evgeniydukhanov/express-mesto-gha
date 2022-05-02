@@ -3,22 +3,16 @@ const AuthorizationError = require('../errors/AuthorizationError');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new AuthorizationError('Необходима авторизация');
+  const cookieAuthorization = req.cookies.jwt;
+  if (!cookieAuthorization) {
+    return AuthorizationError(next);
   }
-
-  const token = authorization.replace('Bearer ', '');
   let payload;
-
   try {
-    payload = jwt.verify(token, 'super-secret-key');
+    payload = jwt.verify(cookieAuthorization, 'super-secret-key');
   } catch (err) {
-    return new AuthorizationError('Необходима авторизация');
+    return AuthorizationError(next);
   }
-
-  req.user = payload; // записываем пейлоуд в объект запроса
-
-  next(); // пропускаем запрос дальше
+  req.user = payload;
+  return next();
 };
