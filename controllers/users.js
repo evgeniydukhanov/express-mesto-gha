@@ -9,22 +9,17 @@ const ValidationError = require('../errors/ValidationError');
 const ConflictError = require('../errors/ConflictError');
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    name,
-    about,
-    avatar,
-    email,
-    password,
-  } = req.body;
+  const { name, about, avatar, email, password } = req.body;
   bcrypt.hash(password, 10).then(
-    ((hash) => User.create({
-      email,
-      name,
-      about,
-      avatar,
-      password: hash,
-      select: false,
-    }))
+    ((hash) =>
+      User.create({
+        email,
+        name,
+        about,
+        avatar,
+        password: hash,
+        select: false,
+      }))
       .then((user) => res.send({ data: user }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
@@ -85,7 +80,11 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
-      const token = jwt.sign({ _id: user._id }, { expiresIn: '7d' }, 'super-secret-key');
+      const token = jwt.sign(
+        { _id: user._id },
+        { expiresIn: '7d' },
+        'super-secret-key',
+      );
       // закукили токен
       res.cookie('jwt', token, {
         maxAge: 3600000,
