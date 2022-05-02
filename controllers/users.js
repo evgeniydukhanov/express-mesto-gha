@@ -9,17 +9,17 @@ const ValidationError = require('../errors/ValidationError');
 const ConflictError = require('../errors/ConflictError');
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  const createUser = (hash) =>
-    User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    });
-
+  const createUser = (hash) => User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password: hash,
+  });
   bcrypt
     .hash(password, 10)
     .then((hash) => createUser(hash))
@@ -89,8 +89,8 @@ module.exports.login = (req, res, next) => {
       // создадим токен
       const token = jwt.sign(
         { _id: user._id },
-        { expiresIn: '7d' },
         'super-secret-key',
+        { expiresIn: '7d' },
       );
       // закукили токен
       res.cookie('jwt', token, {
