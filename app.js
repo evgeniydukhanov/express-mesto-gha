@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 app.use(bodyParser.json());
-app.use(cookieParser);
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose');
