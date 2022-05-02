@@ -9,29 +9,35 @@ const ValidationError = require('../errors/ValidationError');
 const ConflictError = require('../errors/ConflictError');
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
-  bcrypt.hash(password, 10).then(
-    ((hash) => User.create({
-      email,
+  const { name, about, avatar, email, password } = req.body;
+
+  const createUser = (hash) =>
+    User.create({
       name,
       about,
       avatar,
+      email,
       password: hash,
-      select: false,
-    }))
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          next(ValidationError('Переданы неккоректные данные'));
-        }
-        if (err.code === 11000) {
-          next(ConflictError('Пользователь с этим EMAIL уже зарегистрирован'));
-        }
-        next(err);
-      }),
-  );
+    });
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => createUser(hash))
+    .then((user) => {
+      const { _id } = user;
+      res.send({
+        _id,
+        name,
+        about,
+        avatar,
+        email,
+      });
+    })
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким EMAIL уже зарегистрирован'));
+      }
+    });
 };
 
 module.exports.getUsers = (req, res, next) => {
