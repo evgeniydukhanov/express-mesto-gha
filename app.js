@@ -46,7 +46,7 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.all('*', (req, res, next) => {
-  next(NotFoundError('По указанному пути ничего нет'));
+  next(new NotFoundError('По указанному пути ничего нет'));
 });
 
 app.use(errors());

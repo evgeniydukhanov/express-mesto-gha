@@ -63,7 +63,7 @@ module.exports.patchAvatar = (req, res, next) => {
     .then((user) => res.send({ _id: user._id, avatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(ValidationError('Переданы некорректные данные'));
+        next(new ValidationError('Переданы некорректные данные'));
       }
       next(err);
     });
@@ -75,7 +75,7 @@ module.exports.patchProfile = (req, res, next) => {
     .then((user) => res.send({ _id: user._id, name, about }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(ValidationError('Переданы некорректные данные'));
+        next(new ValidationError('Переданы некорректные данные'));
       }
       next(err);
     });
