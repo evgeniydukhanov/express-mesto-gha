@@ -1,35 +1,44 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const BadRequestError = require('../errors/BadRequestError');
-const InternalError = require('../errors/InternalError');
+// const BadRequestError = require('../errors/BadRequestError');
+// const InternalError = require('../errors/InternalError');
 const NotFoundError = require('../errors/NotFoundError');
+const ValidationError = require('../errors/ValidationError');
+// const AuthorizationError = require('../errors/AuthorizationError');
+const ConflictError = require('../errors/ConflictError');
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
+    name, about, avatar, email, password,
+  } = req.body;
+
+  const createUser = (hash) => User.create({
     name,
     about,
     avatar,
     email,
-    password,
-  } = req.body;
-  bcrypt.hash(password, 10).then(
-    ((hash) => User.create({
-      email,
-      name,
-      about,
-      avatar,
-      password: hash,
-      select: false,
-    }))
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          throw new BadRequestError('Переданы неккоректные данные');
-        }
-        throw new InternalError('Что-то пошло не так');
-      }),
-  );
+    password: hash,
+  });
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => createUser(hash))
+    .then((user) => {
+      const { _id } = user;
+      res.send({
+        _id,
+        name,
+        about,
+        avatar,
+        email,
+      });
+    })
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким EMAIL уже зарегистрирован'));
+      }
+      next(err);
+    });
 };
 
 module.exports.getUsers = (req, res, next) => {
@@ -42,48 +51,48 @@ module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError('Пользователь с указанным ID не найден'));
       }
       return res.send(user);
     })
     .catch(next);
 };
 
-module.exports.patchAvatar = (req, res) => {
+module.exports.patchAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true })
     .then((user) => res.send({ _id: user._id, avatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new ValidationError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: err.message });
+      next(err);
     });
 };
 
-module.exports.patchProfile = (req, res) => {
+module.exports.patchProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
     .then((user) => res.send({ _id: user._id, name, about }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new ValidationError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: err.message });
+      next(err);
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
-      const token = jwt.sign({ _id: user._id }, { expiresIn: '7d' }, 'super-secret-key');
+      const token = jwt.sign(
+        { _id: user._id },
+        'super-secret-key',
+        { expiresIn: '7d' },
+      );
       // закукили токен
       res.cookie('jwt', token, {
         maxAge: 3600000,
@@ -93,16 +102,17 @@ module.exports.login = (req, res) => {
       // вернули токен
       res.send({ token });
     })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+    .catch(next);
 };
 
 module.exports.getMe = (req, res, next) => {
   const { _id } = req.user;
   User.find({ _id })
-    .then((user) => res.send(user))
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError('Указанный пользователь не найден'));
+      }
+      return res.send(user);
+    })
     .catch(next);
 };
