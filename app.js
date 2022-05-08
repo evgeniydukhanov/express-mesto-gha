@@ -25,29 +25,29 @@ const errorCatcher = require('./errors/errorCatcher');
 const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-// const allowedCors = [
-//   'https://praktikum.tk',
-//   'http://praktikum.tk',
-//   'localhost:3000',
-// ];
+const allowedCors = [
+  'https://praktikum.tk',
+  'http://praktikum.tk',
+  'localhost:3000',
+];
 
-// // eslint-disable-next-line prefer-arrow-callback
-// app.use(function (req, res, next) {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
-//   const { method } = req;
-//   const requestHeaders = req.headers['access-control-request-headers'];
-//   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-//   if (method === 'OPTIONS') {
-//     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     return res.end();
-//   }
-//   next();
-// });
+// eslint-disable-next-line prefer-arrow-callback
+app.use(function (req, res, next) {
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  const { method } = req;
+  const requestHeaders = req.headers['access-control-request-headers'];
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  if (method === 'OPTIONS') {
+    // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.end();
+  }
+  next();
+});
 
 app.use(requestLogger);
 
