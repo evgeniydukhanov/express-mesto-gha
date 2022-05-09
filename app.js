@@ -1,5 +1,3 @@
-const cors = require('cors');
-
 const express = require('express');
 
 const { celebrate, Joi, errors } = require('celebrate');
@@ -27,39 +25,37 @@ const errorCatcher = require('./errors/errorCatcher');
 const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-// const allowedCors = [
-//   'https://praktikum.tk',
-//   'http://praktikum.tk',
-//   'localhost:3000',
-//   'https://localhost:3000',
-//   'https://127.0.0.1:3000',
-//   'https://mesto-backend.nomoredomains.work/signin',
-//   'http://localhost:3000',
-//   'http://127.0.0.1:3000',
-//   'http://mesto-backend.nomoredomains.work/signin',
-//   'http://mesto-backend.nomoredomains.work/signup',
-//   'https://mesto-backend.nomoredomains.work/signup',
-// ];
+const allowedCors = [
+  'https://praktikum.tk',
+  'http://praktikum.tk',
+  'localhost:3000',
+  'https://localhost:3000',
+  'https://127.0.0.1:3000',
+  'https://mesto-backend.nomoredomains.work/signin',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://mesto-backend.nomoredomains.work/signin',
+  'http://mesto-backend.nomoredomains.work/signup',
+  'https://mesto-backend.nomoredomains.work/signup',
+];
 
-// // eslint-disable-next-line prefer-arrow-callback
-// app.use(function (req, res, next) {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//     res.header('Access-Control-Allow-Credentials', true);
-//   }
-//   const { method } = req;
-//   const requestHeaders = req.headers['access-control-request-headers'];
-//   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-//   if (method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     return res.end();
-//   }
-//   return next();
-// });
-
-app.use(cors());
+// eslint-disable-next-line prefer-arrow-callback
+app.use(function (req, res, next) {
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', true);
+  }
+  const { method } = req;
+  const requestHeaders = req.headers['access-control-request-headers'];
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.end();
+  }
+  return next();
+});
 
 app.use(requestLogger);
 
