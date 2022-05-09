@@ -42,6 +42,7 @@ app.use(function (req, res, next) {
   const { origin } = req.headers;
   console.log(origin);
   if (allowedCors.includes(origin)) {
+    console.log(123);
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Credentials', true);
   }
@@ -51,6 +52,7 @@ app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
   res.header('Access-Control-Allow-Headers', requestHeaders);
   if (method === 'OPTIONS') {
+    console.log(321);
     // res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     // res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
