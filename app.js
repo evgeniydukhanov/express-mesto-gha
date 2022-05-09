@@ -29,9 +29,9 @@ const allowedCors = [
   'https://praktikum.tk',
   'http://praktikum.tk',
   'localhost:3000',
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://mesto-backend.nomoredomains.work',
+  'https://localhost:3000',
+  'https://127.0.0.1:3000',
+  'https://mesto-backend.nomoredomains.work',
 ];
 
 // eslint-disable-next-line prefer-arrow-callback
