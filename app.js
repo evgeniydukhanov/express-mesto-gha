@@ -48,7 +48,7 @@ app.use(function (req, res, next) {
   }
   const { method } = req;
   // const requestHeaders = req.headers['access-control-request-headers'];
-  const requestHeaders = 'context-type,authorization';
+  const requestHeaders = 'content-type,authorization';
   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
   console.log(requestHeaders);
   res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
