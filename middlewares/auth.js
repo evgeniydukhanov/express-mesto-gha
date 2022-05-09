@@ -3,13 +3,13 @@ const AuthorizationError = require('../errors/AuthorizationError');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  const cookieAuthorization = req.cookies.jwt;
-  if (!cookieAuthorization) {
+  const authorization = req.headers.jwt;
+  if (!authorization) {
     return next(new AuthorizationError('Ошибка авторизации'));
   }
   let payload;
   try {
-    payload = jwt.verify(cookieAuthorization, 'super-secret-key');
+    payload = jwt.verify(authorization, 'super-secret-key');
   } catch (err) {
     return next(new AuthorizationError('Ошибка авторизации'));
   }
