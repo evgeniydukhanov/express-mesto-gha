@@ -32,6 +32,9 @@ const allowedCors = [
   'https://localhost:3000',
   'https://127.0.0.1:3000',
   'https://mesto-backend.nomoredomains.work',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://mesto-backend.nomoredomains.work',
 ];
 
 // eslint-disable-next-line prefer-arrow-callback
