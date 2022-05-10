@@ -7,7 +7,6 @@ const ValidationError = require('../errors/ValidationError');
 const ConflictError = require('../errors/ConflictError');
 
 const { JWT_SECRET_KEY } = process.env;
-console.log(process.env.NODE_ENV);
 
 module.exports.createUser = (req, res, next) => {
   const {
