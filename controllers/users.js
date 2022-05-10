@@ -4,9 +4,9 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 const ConflictError = require('../errors/ConflictError');
-require('dotenv').config();
+// require('dotenv').config();
 
-const { JWT_SECRET_KEY = 'JWT_SECRET_KEY' } = process.env;
+// const { JWT_SECRET_KEY = 'JWT_SECRET_KEY' } = process.env;
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -90,7 +90,7 @@ module.exports.login = (req, res, next) => {
       // создадим токен
       const token = jwt.sign(
         { _id: user._id },
-        JWT_SECRET_KEY,
+        'super-secret-key',
         { expiresIn: '7d' },
       );
       // закукили токен
