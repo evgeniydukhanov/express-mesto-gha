@@ -1,8 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 
 const { celebrate, Joi, errors } = require('celebrate');
 
-const { PORT = 3000 } = process.env;
+const PORT = process.env;
 
 const app = express();
 
